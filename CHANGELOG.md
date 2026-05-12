@@ -7,40 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-12
+
 ### Added
 
-- Initial standalone `leptos-classes` crate release for prop-drillable Leptos class handling.
-- `Classes` builder API with `with`, `with_all`, and `with_toggle`.
-- Chaining API with `add` and `add_toggle`, plus mutating bulk-add support via `add_all`.
-- Conditional class handling for booleans, `Signal<bool>`, and `ReadSignal<bool>`.
-- Conversions from common static, owned, conditional, and array-based class inputs.
-- `IntoClass` integration for rendering `class=classes` directly in Leptos views.
-- Debug-build duplicate class detection with `tracing` warnings.
-- Crate README with usage guidance and rendering semantics.
-- WASM DOM lifecycle tests covering client-side attribute updates and reset behavior.
+- Public surface: `Classes`, `ClassesBuilder`, `ClassName`, `InvalidClassName`, `MergeStrategy`.
+- Blanket `From` impls on `Classes`: `&'static str`, `String`, `Cow<'static, str>`, `ClassName`,
+  `&[N]` and `[N; M]` for `N: Into<ClassName>`, `(N, C)` reactive tuples and their slice/array variants.
+- Chaining API on `Classes` and mirroring builder API on `ClassesBuilder` (via `Classes::builder()`):
+  `add` / `with`, `add_reactive` / `with_reactive`, `add_all` / `with_all` (any `IntoIterator` of
+  `Into<ClassName>`), `add_toggle` / `with_toggle`, `add_parsed` / `with_parsed`, plus `Classes::parse`,
+  `Classes::merge`, and `ClassesBuilder::with_merged`. Chaining methods consume `self`; the builder finalizes
+  with `build()`.
+- Reactive condition shapes for `add_reactive` / `add_toggle`: `bool`, `Signal<bool>`, `ReadSignal<bool>`,
+  `RwSignal<bool>`, `Memo<bool>`, and `Fn() -> bool + Send + Sync + 'static` closures.
+- `MergeStrategy` with `UnionConditions` (default), `KeepSelf`, `PanicOnConflict`. Non-panic strategies do not
+  preserve toggle-pair structure across a merge.
+- `ClassName`: validated single-token wrapper around `Cow<'static, str>` with `Deref<Target = str>` and
+  `AsRef<str>`. `ClassName::try_new` returns `Result<ClassName, InvalidClassName>`; the `From<&'static str>` /
+  `From<String>` / `From<Cow<'static, str>>` impls panic on invalid input.
+- `IntoClass` integration so `class=classes` works in Leptos views: fully static class lists skip
+  `RenderEffect` setup, hydration reconciles against the element's current `class` attribute, reactive
+  updates diff against the live DOM attribute, and `IntoClass::reset` parks the state so a subsequent
+  `rebuild` can re-establish reactivity.
+- Unconditional token validation: empty, whitespace-only, or whitespace-containing input panics at the
+  `ClassName` conversion (use `ClassName::try_new` for fail-soft handling). Token names are structurally unique
+  within a `Classes`; duplicates panic at insertion.
+- `Classes::to_class_string` for materializing the currently active classes outside the renderer path.
+- `nightly` cargo feature forwarding to `leptos/nightly`.
+- MSRV: Rust 1.89.0.
 
-### Changed
+[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.0...HEAD
 
-- `Classes` now skips `RenderEffect` setup for fully static class lists and only installs reactive bookkeeping when
-  signal-backed entries are present.
-- The recommended DOM test workflow now uses a real browser integration test driven by
-  `chrome-for-testing-manager` and `thirtyfour`.
-- `add_all` and `with_all` now accept any `IntoIterator`, which makes them work with vectors, arrays, slices, and
-  iterator adapters without additional `.into_iter()` plumbing.
-- Hydration now reconciles against the element's current `class` attribute on the first render pass instead of waiting
-  for a later reactive change.
-- Packaging metadata now includes a crate README and docs.rs target configuration for native and wasm builds.
-
-### Fixed
-
-- `write_class_string` now preserves correct spacing when appending into a non-empty buffer.
-- Managed class updates now reconcile against the live DOM attribute, which ensures external `class` mutations are
-  overwritten on the next managed update pass even when the computed class list itself is unchanged.
-- Added missing `ReadSignal<bool>` conversions for owned-string and array-based `Classes` inputs.
-- Expanded unit and browser regression coverage for append semantics, state transitions between static and reactive
-  rendering, and unmanaged DOM mutations.
-- Fixed an initial hydration bug where `Classes::hydrate` could leave the DOM out of sync when the first computed class
-  string differed from the element's existing `class` attribute.
-- Added lifecycle coverage for `build`, `hydrate`, `rebuild`, `reset`, and reactive updates in wasm-targeted tests.
-- Empty and whitespace-only class names are now ignored during rendering, with a `tracing::warn!` emitted when such
-  entries are added.
+[0.1.0]: https://github.com/lpotthast/leptos-classes/releases/tag/v0.1.0

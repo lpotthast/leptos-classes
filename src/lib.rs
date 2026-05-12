@@ -1,18 +1,25 @@
 #![doc = include_str!("../README.md")]
 
-mod class_entry;
+mod class_item;
 mod class_list;
+mod class_name;
 mod classes;
+mod condition;
 mod convert;
 mod into_class;
 
-pub use class_entry::{ClassEntry, ClassName};
-/// Internal compatibility re-export for `TypedBuilder`-generated builder signatures.
-///
-/// `ClassList` remains an implementation detail with no public constructors. Changes to this
-/// hidden re-export and the internal type it exposes are not covered by the crate's usual semver
-/// expectations.
-#[doc(hidden)]
-pub use class_list::ClassList;
-pub use classes::Classes;
-pub use into_class::ClassesState;
+pub use class_name::{ClassName, InvalidClassName};
+pub use classes::{Classes, ClassesBuilder, MergeStrategy};
+
+/// Compile-time assertions that the public types stay `Send + Sync`. `Classes` is intended to
+/// flow through Leptos component props, which require both bounds. If a future change to any
+/// internal field weakens that, this `const _` will fail to compile and surface the regression at
+/// the crate boundary instead of at a downstream consumer.
+const _: () = {
+    const fn assert_send_sync<T: Send + Sync>() {}
+    assert_send_sync::<Classes>();
+    assert_send_sync::<ClassesBuilder>();
+    assert_send_sync::<ClassName>();
+    assert_send_sync::<InvalidClassName>();
+    assert_send_sync::<MergeStrategy>();
+};

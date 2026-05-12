@@ -7,9 +7,21 @@ authors = ["Lukas Potthast <privat@lukas-potthast.de>"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/lpotthast/leptos-classes"
+homepage = "https://github.com/lpotthast/leptos-classes"
+documentation = "https://docs.rs/leptos-classes"
 description = "Prop-drillable, reactive class container for Leptos."
 categories = ["web-programming", "gui", "wasm"]
 keywords = ["leptos", "class", "classes", "reactive", "props"]
+exclude = [
+    "/.cargo/**",
+    "/.github/**",
+    "/.idea/**",
+    "/AGENTS.md",
+    "/CLAUDE.md",
+    "/Justfile",
+    "/testing/**",
+    "/tests/**",
+]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
@@ -19,26 +31,37 @@ default = []
 nightly = ["leptos/nightly"]
 
 [dependencies]
-leptos = "0.8.17"
-reactive_graph = "0.2.13"
+leptos = { version = "0.8.19", default-features = false }
 smallvec = "1"
-tracing = "0.1.44"
+thiserror = "2"
 
 [dev-dependencies]
-assertr = { version = "0.5.0", default-features = false, features = ["std"] }
-leptos = { version = "0.8.17", features = ["csr", "hydrate"] }
+assertr = { version = "0.6.0", default-features = false, features = ["std"] }
+tracing = "0.1.44"
+leptos = { version = "0.8.19", features = ["csr", "hydrate"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-anyhow = { version = "1.0.102", default-features = false, features = ["std"] }
-async-trait = { version = "0.1.89", default-features = false, features = [] }
-chrome-for-testing-manager = { version = "0.7.1", default-features = false, features = ["thirtyfour"] }
-thirtyfour = { version = "0.36.1", default-features = false, features = ["component", "reqwest", "rustls-tls"] }
-tokio = { version = "1.50.0", default-features = false, features = ["macros", "rt", "rt-multi-thread", "time"] }
-tokio-process-tools = { version = "0.8.1", default-features = false, features = [] }
+browser-test = "0.2.1"
+leptos-browser-test = "0.1.1"
+tokio = { version = "1.52.3", default-features = false, features = ["macros", "rt", "rt-multi-thread", "time"] }
 tracing-subscriber = { version = "0.3.23", default-features = false, features = ["ansi", "fmt", "registry"] }
 
 [lints.rust]
 missing_docs = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(web_sys_unstable_apis)'] }
 
 [lints.clippy]
-pedantic = "warn"
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+doc_markdown = { level = "allow", priority = 1 }
+float_cmp = { level = "allow", priority = 1 }
+missing_errors_doc = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
+must_use_candidate = { level = "allow", priority = 1 }
+needless_pass_by_value = { level = "allow", priority = 1 }
+option_if_let_else = { level = "allow", priority = 1 }
+similar_names = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+used_underscore_binding = { level = "allow", priority = 1 }
+wildcard_imports = { level = "allow", priority = 1 }

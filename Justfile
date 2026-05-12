@@ -13,8 +13,12 @@ install-tools:
   cargo install just
   cargo install cargo-leptos
   cargo install wasm-bindgen-cli
+  cargo install cargo-audit
+  cargo install cargo-deny
+  cargo install cargo-semver-checks
+  cargo install leptosfmt
 
-# Enable the WASM target required by `cargo leptos` and wasm tests.
+# Enable the WASM target required by `cargo leptos` and the wasm compile check.
 enable-wasm:
   rustup target add wasm32-unknown-unknown
 
@@ -22,25 +26,45 @@ enable-wasm:
 fmt:
   cargo fmt --all
 
-# Run clippy for the crate test surface.
+# Run format checks.
+fmt-check:
+  cargo fmt --all --check
+
+# Format Leptos code.
+leptosfmt:
+  leptosfmt ./testing/test-app/*
+
+# Run clippy.
 clippy:
-  cargo clippy --tests -- -D warnings
+  cargo clippy --all-targets -- -D warnings
 
 # Type-check the crate.
 check:
-  cargo check
+  cargo check --all-targets
+
+# Verify the library compiles for the wasm32-unknown-unknown target.
+check-wasm:
+  cargo check --target wasm32-unknown-unknown --locked
 
 # Run unit tests, integration tests, and doctests for the native target.
 test:
   cargo test
 
-# Run only the crate unit tests and doctests.
+# Run only the crate unit tests.
 test-lib:
   cargo test --lib
 
-# Run the wasm-target test command expected to work from this crate directory.
-test-wasm:
-  cargo test --target wasm32-unknown-unknown
+# Run only the crate doc tests.
+test-doc:
+  cargo test --doc
+
+# Build documentation with rustdoc warnings denied (matches CI).
+doc:
+  RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --locked
+
+# Serve the crate-local test app for manual inspection.
+serve-test-app:
+  cd ./testing/test-app && cargo leptos serve
 
 # Run the Chrome-based browser integration test headlessly.
 browser-test:
@@ -50,9 +74,21 @@ browser-test:
 browser-test-visible:
   BROWSER_TEST_VISIBLE=1 cargo test --test browser_test -- --nocapture
 
-# Serve the crate-local test app for manual inspection.
-serve-test-app:
-  cd ./testing/test-app && cargo leptos serve
+# Start the test app and pause before running browser assertions.
+browser-test-pause:
+  BROWSER_TEST_VISIBLE=1 BROWSER_TEST_PAUSE=1 cargo test --test browser_test -- --nocapture
+
+# Scan Cargo.lock against the RustSec advisory database.
+audit:
+  cargo audit
+
+# Run cargo-deny's supply-chain checks (advisories, bans, sources).
+deny:
+  cargo deny check
+
+# Detect breaking public-API changes vs. the latest published release.
+semver-check:
+  cargo semver-checks
 
 # Clean build artifacts for this crate and its local test app.
 clean:
@@ -61,6 +97,11 @@ clean:
 
 # Run the most important verification commands for this crate.
 verify:
-  cargo test --lib
-  cargo test --target wasm32-unknown-unknown
-  cargo test --test browser_test -- --nocapture
+  just fmt-check
+  just check
+  just check-wasm
+  just clippy
+  just test-lib
+  just test-doc
+  just browser-test
+  just doc
