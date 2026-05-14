@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-14
+
+### Changed
+
+- Updated the `README.md` example to a more representative class flow.
+- CI now properly runs the browser integration tests.
+- Fallible CI jobs now use a custom script block for handling non-successful outcomes (dropped `continue-on-error`).
+
 ## [0.1.0] - 2026-05-12
 
 ### Added
@@ -37,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nightly` cargo feature forwarding to `leptos/nightly`.
 - MSRV: Rust 1.89.0.
 
-[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.1...HEAD
+
+[0.1.1]: https://github.com/lpotthast/leptos-classes/compare/v0.1.0...v0.1.1
 
 [0.1.0]: https://github.com/lpotthast/leptos-classes/releases/tag/v0.1.0
