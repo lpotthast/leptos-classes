@@ -31,37 +31,67 @@ Compatible with Leptos 0.8. Requires Rust 1.89 or newer.
 use leptos::prelude::*;
 use leptos_classes::Classes;
 
+/// The lowest-level component renders the accumulated class list
+/// onto the real element.
 #[component]
 fn Button(
     #[prop(into, optional)] classes: Classes,
+    children: Children,
 ) -> impl IntoView {
     view! {
         <button class=classes.add("btn")>
-            "Save"
+            {children()}
         </button>
     }
 }
 
+/// Components sitting in the middle can add their own classes.
 #[component]
-fn Demo() -> impl IntoView {
-    let (is_primary, _) = signal(true);
+fn FormActionButton(
+    #[prop(into, optional)] classes: Classes,
+    children: Children,
+) -> impl IntoView {
+    view! {
+        <Button classes=classes.add("form-action-btn")>
+            {children()}
+        </Button>
+    }
+}
+
+/// Root component defines the initial classes using a builder pattern
+/// or can rely on `Into` conversions (see docs).
+#[component]
+fn FormActions() -> impl IntoView {
+    let (is_dirty, _) = signal(true);
 
     view! {
-        // Builder API: chain `with_*` calls to assemble entries.
-        <Button classes=Classes::builder()
-            .with("btn-base")
-            .with_reactive("btn-primary", is_primary)
-            .with_reactive("btn-secondary", Signal::derive(move || !is_primary.get()))
-            .build()
-        />
+        // Plain &str conversion.
+        <FormActionButton classes="cancel-btn">
+            "Cancel"
+        </FormActionButton>
 
-        // `From` conversion: `#[prop(into, ...)]` accepts any From-supported shape directly.
-        // Strings, arrays of strings, `(name, condition)` tuples, and arrays of those tuples
-        // all flow through without an intermediate `Classes::builder()` call.
-        <Button classes=("btn-highlight", is_primary)/>
+        // Builder chain.
+        <FormActionButton
+            classes=Classes::builder()
+                .with("save-btn")
+                .with_reactive("is-dirty", is_dirty)
+                .build()
+        >
+            "Save changes"
+        </FormActionButton>
+
+        // Method chain.
+        <FormActionButton
+            classes=Classes::from("help-btn")
+                .add("mobile-hidden")
+        >
+            "Open help"
+        </FormActionButton>
     }
 }
 ```
+
+While `is_dirty` is `true`, the save button renders with `class="save-button is-dirty form-action-button button"`.
 
 ## Concepts
 
