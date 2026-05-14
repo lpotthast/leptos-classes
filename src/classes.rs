@@ -76,7 +76,7 @@ pub enum MergeStrategy {
 /// use leptos::prelude::*;
 /// use leptos_classes::Classes;
 ///
-/// /// The lowest-level component renders the class-list into an actual HTML element.
+/// /// The lowest-level component renders the class-list onto an actual HTML element.
 /// #[component]
 /// fn NeedingClasses(
 ///     #[prop(into, optional)] classes: Classes,
