@@ -2,6 +2,7 @@
   <dictionary name="project">
     <words>
       <w>leptos</w>
+      <w>tmpfs</w>
       <w>wasm</w>
     </words>
   </dictionary>
