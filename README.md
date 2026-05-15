@@ -20,7 +20,7 @@ preserves conditional entries and signal bindings until the final render lets co
 
 ```toml
 [dependencies]
-leptos-classes = "0.1"
+leptos-classes = "0.1.2"
 ```
 
 Compatible with Leptos 0.8. Requires Rust 1.89 or newer.

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-15
+
+### Changed
+
+- Bumped `leptos-browser-test` dev-dependency to `0.2.0`, which unifies its `tokio-process-tools` version with
+  `chrome-for-testing-manager` and brings improved graceful termination support on Windows. This fixes a hang at the
+  end of `just browser-test` on Windows where `cargo leptos serve` and its server child were not torn down reliably 
+  before.
+
 ## [0.1.1] - 2026-05-14
 
 ### Changed
@@ -45,7 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nightly` cargo feature forwarding to `leptos/nightly`.
 - MSRV: Rust 1.89.0.
 
-[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.2...HEAD
+
+[0.1.2]: https://github.com/lpotthast/leptos-classes/compare/v0.1.1...v0.1.2
 
 [0.1.1]: https://github.com/lpotthast/leptos-classes/compare/v0.1.0...v0.1.1
 
