@@ -1,6 +1,6 @@
 [package]
 name = "leptos-classes"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 rust-version = "1.89.0"
 authors = ["Lukas Potthast <privat@lukas-potthast.de>"]
@@ -41,8 +41,8 @@ tracing = "0.1.44"
 leptos = { version = "0.8.19", features = ["csr", "hydrate"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-browser-test = "0.2.1"
-leptos-browser-test = "0.2.0"
+browser-test = "0.4.0"
+leptos-browser-test = "0.3.0"
 tokio = { version = "1.52.3", default-features = false, features = ["macros", "rt", "rt-multi-thread", "time"] }
 tracing-subscriber = { version = "0.3.23", default-features = false, features = ["ansi", "fmt", "registry"] }
 

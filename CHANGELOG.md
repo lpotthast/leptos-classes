@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-07-17
+
+### Changed
+
+- Updated the browser integration test harness to `browser-test` 0.4.0 and `leptos-browser-test` 0.3.0.
+- Refreshed the test-app's `wasm-bindgen` dependency family to match current `wasm-bindgen-cli` releases.
+
 ## [0.1.2] - 2026-05-15
 
 ### Changed
@@ -54,7 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nightly` cargo feature forwarding to `leptos/nightly`.
 - MSRV: Rust 1.89.0.
 
-[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/lpotthast/leptos-classes/compare/v0.1.3...HEAD
+
+[0.1.3]: https://github.com/lpotthast/leptos-classes/compare/v0.1.2...v0.1.3
 
 [0.1.2]: https://github.com/lpotthast/leptos-classes/compare/v0.1.1...v0.1.2
 

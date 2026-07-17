@@ -20,7 +20,8 @@ async fn browser_tests() -> Result<(), Report> {
     let app = LeptosTestAppConfig::new("testing/test-app")
         .with_app_name("leptos-classes test app")
         .start()
-        .await?;
+        .await
+        .map_err(Report::into_dynamic)?;
 
     BrowserTestRunner::new()
         .with_chrome_capabilities(|caps| {
@@ -50,7 +51,8 @@ async fn browser_tests() -> Result<(), Report> {
             app.base_url(),
             BrowserTests::new().with(ui_tests::test_classes::ClassesTests {}),
         )
-        .await?;
+        .await
+        .map_err(Report::into_dynamic)?;
 
     Ok(())
 }
