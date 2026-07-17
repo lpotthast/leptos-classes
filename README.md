@@ -20,7 +20,7 @@ preserves conditional entries and signal bindings until the final render lets co
 
 ```toml
 [dependencies]
-leptos-classes = "0.1.3"
+leptos-classes = "0.1.4"
 ```
 
 Compatible with Leptos 0.8. Requires Rust 1.89 or newer.
@@ -125,7 +125,8 @@ Fully static `Classes` values install no reactive effect and behave like a direc
 ## Testing
 
 `just verify` runs the pre-PR bundle: format check, native check, `wasm32-unknown-unknown` check, clippy, lib tests,
-doc tests, browser test, and docs with rustdoc warnings denied. Run `just` for the full list of recipes.
+doc tests, browser test, and docs with rustdoc warnings denied. `just verify-nightly` checks the `nightly` feature on
+native and WASM targets with a nightly Rust toolchain. Run `just` for the full list of recipes.
 
 ## Related Crates
 

@@ -105,3 +105,10 @@ verify:
   just test-doc
   just browser-test
   just doc
+
+# Verify the Leptos nightly integration on native and WASM targets.
+verify-nightly:
+  cargo +nightly check --all-targets --features nightly --locked
+  cargo +nightly check --target wasm32-unknown-unknown --features nightly --locked
+  cargo +nightly test --lib --features nightly --locked
+  cargo +nightly test --doc --features nightly --locked

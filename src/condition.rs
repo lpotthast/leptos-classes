@@ -1,4 +1,7 @@
-use leptos::prelude::{Get, Memo, RwSignal, Signal, Track};
+use leptos::prelude::{Get, Signal, Track};
+#[cfg(not(feature = "nightly"))]
+use leptos::prelude::{Memo, RwSignal};
+#[cfg(not(feature = "nightly"))]
 use leptos::reactive::signal::ReadSignal;
 
 /// A condition that controls whether a class entry is active.
@@ -38,7 +41,7 @@ impl ClassCondition {
     }
 
     pub(crate) fn when_predicate(predicate: impl Fn() -> bool + Send + Sync + 'static) -> Self {
-        Self(ClassConditionKind::When(Signal::derive(predicate)))
+        Self::when_signal(Signal::derive(predicate))
     }
 
     pub(crate) fn is_active(&self) -> bool {
@@ -116,6 +119,7 @@ impl From<bool> for ClassCondition {
 /// Creates a reactive condition from a Leptos `Signal<bool>`.
 ///
 /// When the signal updates, any owning [`Classes`](crate::Classes) value re-renders.
+#[cfg(not(feature = "nightly"))]
 impl From<Signal<bool>> for ClassCondition {
     fn from(signal: Signal<bool>) -> Self {
         Self::when_signal(signal)
@@ -124,6 +128,7 @@ impl From<Signal<bool>> for ClassCondition {
 
 /// Creates a reactive condition from a Leptos `ReadSignal<bool>`, typically the read half
 /// of a `signal(...)` pair.
+#[cfg(not(feature = "nightly"))]
 impl From<ReadSignal<bool>> for ClassCondition {
     fn from(signal: ReadSignal<bool>) -> Self {
         Self::when_signal(signal)
@@ -131,6 +136,7 @@ impl From<ReadSignal<bool>> for ClassCondition {
 }
 
 /// Creates a reactive condition from a Leptos `RwSignal<bool>`.
+#[cfg(not(feature = "nightly"))]
 impl From<RwSignal<bool>> for ClassCondition {
     fn from(signal: RwSignal<bool>) -> Self {
         Self::when_signal(signal)
@@ -138,6 +144,7 @@ impl From<RwSignal<bool>> for ClassCondition {
 }
 
 /// Creates a reactive condition from a Leptos `Memo<bool>`.
+#[cfg(not(feature = "nightly"))]
 impl From<Memo<bool>> for ClassCondition {
     fn from(memo: Memo<bool>) -> Self {
         Self::when_signal(memo)
@@ -149,6 +156,8 @@ impl From<Memo<bool>> for ClassCondition {
 /// Accepts any `Fn() -> bool + Send + Sync + 'static`. The closure is wrapped in
 /// `Signal::derive`, so it is re-evaluated whenever its tracked dependencies change -
 /// useful for combining several signals, e.g. `move || is_active.get() && !disabled.get()`.
+/// With the `nightly` feature, Leptos' reactive wrappers also implement `Fn()` and use
+/// this conversion instead of their stable-only explicit conversions above.
 impl<F> From<F> for ClassCondition
 where
     F: Fn() -> bool + Send + Sync + 'static,
